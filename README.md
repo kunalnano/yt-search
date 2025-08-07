@@ -207,7 +207,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 - **Issues**: [GitHub Issues](https://github.com/kunalnano/yt-search/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/kunalnano/yt-search/discussions)
-- **Email**: your-email@example.com
 
 ---
 
