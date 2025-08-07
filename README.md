@@ -1,3 +1,6 @@
+<img width="627" height="384" alt="image" src="https://github.com/user-attachments/assets/96add455-4f71-4fdd-806a-ea23652ab600" />
+
+
 # YT-Search: Algorithm-Free YouTube Terminal Browser 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
