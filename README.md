@@ -1,3 +1,6 @@
+<img width="627" height="384" alt="image" src="https://github.com/user-attachments/assets/96add455-4f71-4fdd-806a-ea23652ab600" />
+
+
 # YT-Search: Algorithm-Free YouTube Terminal Browser 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -5,8 +8,6 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 > **YouTube as it should be**: A library, not an engagement trap. Pure search results sorted by actual popularity, no algorithmic manipulation.
-
-![YT-Search Demo](https://via.placeholder.com/800x400.png?text=YT-Search+Terminal+Demo)
 
 ## 🎯 Features
 
@@ -204,7 +205,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 - **Issues**: [GitHub Issues](https://github.com/kunalnano/yt-search/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/kunalnano/yt-search/discussions)
-- **Email**: your-email@example.com
 
 ---
 
