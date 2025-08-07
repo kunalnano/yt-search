@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yt-search-terminal"
+version = "1.0.0"
+description = "Algorithm-free YouTube search in your terminal"
+readme = "README.md"
+authors = [{name = "Al Sharma"}]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+requires-python = ">=3.7"
+keywords = ["youtube", "search", "terminal", "cli", "algorithm-free", "privacy"]
+
+[project.urls]
+Homepage = "https://github.com/alsharma/yt-search"
+Issues = "https://github.com/alsharma/yt-search/issues"
+Repository = "https://github.com/alsharma/yt-search"
+
+[project.scripts]
+yt-search = "yt_search.main:main"
+yts = "yt_search.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["yt_search*"]
