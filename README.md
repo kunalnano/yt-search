@@ -9,8 +9,6 @@
 
 > **YouTube as it should be**: A library, not an engagement trap. Pure search results sorted by actual popularity, no algorithmic manipulation.
 
-![YT-Search Demo](https://via.placeholder.com/800x400.png?text=YT-Search+Terminal+Demo)
-
 ## 🎯 Features
 
 - **No Algorithm**: Results sorted by actual view count, not "engagement"
