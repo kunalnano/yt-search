@@ -11,7 +11,7 @@ setup(
     description="Algorithm-free YouTube search in your terminal",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/alsharma/yt-search",
+    url="https://github.com/kunalnano/yt-search",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -36,7 +36,7 @@ setup(
     },
     keywords="youtube search terminal cli algorithm-free",
     project_urls={
-        "Bug Reports": "https://github.com/alsharma/yt-search/issues",
-        "Source": "https://github.com/alsharma/yt-search",
+        "Bug Reports": "https://github.com/kunalnano/yt-search/issues",
+        "Source": "https://github.com/kunalnano/yt-search",
     },
 )

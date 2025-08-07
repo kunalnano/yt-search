@@ -27,9 +27,9 @@ requires-python = ">=3.7"
 keywords = ["youtube", "search", "terminal", "cli", "algorithm-free", "privacy"]
 
 [project.urls]
-Homepage = "https://github.com/alsharma/yt-search"
-Issues = "https://github.com/alsharma/yt-search/issues"
-Repository = "https://github.com/alsharma/yt-search"
+Homepage = "https://github.com/kunalnano/yt-search"
+Issues = "https://github.com/kunalnano/yt-search/issues"
+Repository = "https://github.com/kunalnano/yt-search"
 
 [project.scripts]
 yt-search = "yt_search.main:main"

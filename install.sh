@@ -5,7 +5,7 @@
 
 set -e
 
-REPO_URL="https://github.com/alsharma/yt-search.git"
+REPO_URL="https://github.com/kunalnano/yt-search.git"
 INSTALL_DIR="$HOME/.yt-search"
 BIN_DIR="$HOME/.local/bin"
 

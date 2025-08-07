@@ -29,7 +29,7 @@ pip install yt-search-terminal
 ### Option 2: Using Homebrew (macOS/Linux)
 
 ```bash
-brew tap alsharma/yt-search
+brew tap kunalnano/yt-search
 brew install yt-search
 ```
 
@@ -43,7 +43,7 @@ npm install -g yt-search-terminal
 
 ```bash
 # Clone the repository
-git clone https://github.com/alsharma/yt-search.git
+git clone https://github.com/kunalnano/yt-search.git
 cd yt-search
 
 # Install
@@ -54,7 +54,7 @@ cd yt-search
 
 ```bash
 # Clone and setup
-git clone https://github.com/alsharma/yt-search.git
+git clone https://github.com/kunalnano/yt-search.git
 cd yt-search
 
 # Make executable
@@ -202,8 +202,8 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/alsharma/yt-search/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/alsharma/yt-search/discussions)
+- **Issues**: [GitHub Issues](https://github.com/kunalnano/yt-search/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kunalnano/yt-search/discussions)
 - **Email**: your-email@example.com
 
 ---

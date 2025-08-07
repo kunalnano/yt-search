@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alsharma/yt-search.git"
+    "url": "git+https://github.com/kunalnano/yt-search.git"
   },
   "keywords": [
     "youtube",
@@ -26,9 +26,9 @@
   "author": "Al Sharma",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alsharma/yt-search/issues"
+    "url": "https://github.com/kunalnano/yt-search/issues"
   },
-  "homepage": "https://github.com/alsharma/yt-search#readme",
+  "homepage": "https://github.com/kunalnano/yt-search#readme",
   "preferGlobal": true,
   "engines": {
     "node": ">=12.0.0"
