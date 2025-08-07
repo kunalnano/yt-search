@@ -118,12 +118,12 @@ def display_results(videos: List[Dict], sort_by: str = 'views'):
     """Display search results in retro terminal table"""
     if not videos:
         print(f"{C.R}No results found{C.X}")
-        return
+        return []  # Return empty list
     
     # Sort videos by view count (descending) by default
     if sort_by == 'views':
         videos = sorted(videos, key=lambda x: parse_view_count(x.get('views', '0')), reverse=True)
-        
+    
     # Print header with URL column
     print(f"\n{C.G}{'═'*120}{C.X}")
     print(f"{C.B}{C.C}  # │ TITLE{' '*39} │ VIEWS      │ AGE        │ URL{C.X}")
@@ -152,6 +152,8 @@ def display_results(videos: List[Dict], sort_by: str = 'views'):
         
     print(f"{C.G}{'═'*120}{C.X}")
     print(f"\n{C.D}Showing {len(videos)} results (sorted by views - highest first){C.X}")
+    
+    return videos  # Return the sorted list
 
 def play_video(url: str, audio_only: bool = False):
     """Open video in browser or player"""
@@ -178,15 +180,39 @@ def main():
 ║                                                                           ║
 ║  [NO ALGORITHMS. JUST PURE SEARCH. SORTED BY VIEWS.]                     ║
 ╚══════════════════════════════════════════════════════════════════════════╝{C.X}
-""")    
+""")
     print(f"\n{C.G}Commands:{C.X}")
     print(f"  {C.C}search <query>{C.X} - Search YouTube (auto-sorted by views)")
     print(f"  {C.C}next{C.X} - Show next 25 results")
     print(f"  {C.C}open <number>{C.X} - Open video in browser")
     print(f"  {C.C}url <number>{C.X} - Copy video URL")
-    print(f"  {C.C}quit{C.X} - Exit\n")
+def main():
+    """Main interactive loop"""
+    # Print banner
+    print(f"""
+{C.M}╔══════════════════════════════════════════════════════════════════════════╗
+║  ██╗   ██╗████████╗    ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗ ║
+║  ╚██╗ ██╔╝╚══██╔══╝    ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║ ║
+║   ╚████╔╝    ██║       ███████╗█████╗  ███████║██████╔╝██║     ███████║ ║
+║    ╚██╔╝     ██║       ╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║ ║
+║     ██║      ██║       ███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║ ║
+║     ╚═╝      ╚═╝       ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ║
+║                                                                           ║
+║  [NO ALGORITHMS. JUST PURE SEARCH. SORTED BY VIEWS.]                     ║
+╚══════════════════════════════════════════════════════════════════════════╝{C.X}
+""")
     
-    current_results = []
+    print(f"\n{C.G}Commands:{C.X}")
+    print(f"  {C.C}search <query>{C.X} - Search YouTube (auto-sorted by views)")
+    print(f"  {C.C}next{C.X} - Show next 25 results")
+    print(f"  {C.C}open <number>{C.X} - Open video in browser")
+    print(f"  {C.C}url <number>{C.X} - Copy video URL")
+    print(f"  {C.C}quit{C.X} - Exit")
+    
+    current_query = ""
+    current_results = []  # Raw results
+    sorted_results = []    # Sorted for display
+    result_offset = 0
     current_query = ""
     result_offset = 0
     
@@ -210,32 +236,38 @@ def main():
                 current_query = query
                 result_offset = 0
                 current_results = search_youtube_direct(query, max_results=25)
-                display_results(current_results)
+                sorted_results = display_results(current_results)  # Get sorted list
                 
             elif command == 'next':
-                if current_query:
+                if current_results:  # Check for results, not query
                     result_offset += 25
                     print(f"{C.Y}[Loading more results...]{C.X}")
-                    # In a real implementation, we'd need to handle pagination properly
-                    # For now, just show a message
+                    # Get next batch of results
+                    more_results = search_youtube_direct(current_query, max_results=25)
+                    # Extend the current results list
+                    current_results.extend(more_results)
+                    # Display the new batch and get sorted list
+                    sorted_batch = display_results(more_results)
+                    sorted_results.extend(sorted_batch)
                     print(f"{C.D}Showing results {result_offset+1}-{result_offset+25}{C.X}")
                 else:
-                    print(f"{C.R}No search query. Search something first!{C.X}")
+                    print(f"{C.R}No search results. Search something first!{C.X}")
                 
             elif command in ['open', 'play'] and len(parts) > 1:
                 try:
                     index = int(parts[1]) - 1
-                    if 0 <= index < len(current_results):
-                        play_video(current_results[index]['url'])
+                    if 0 <= index < len(sorted_results):
+                        play_video(sorted_results[index]['url'])
                     else:
                         print(f"{C.R}Invalid video number{C.X}")
                 except (ValueError, IndexError):
-                    print(f"{C.R}Invalid number{C.X}")                    
+                    print(f"{C.R}Invalid number{C.X}")
+                    
             elif command == 'url' and len(parts) > 1:
                 try:
                     index = int(parts[1]) - 1
-                    if 0 <= index < len(current_results):
-                        url = current_results[index]['url']
+                    if 0 <= index < len(sorted_results):
+                        url = sorted_results[index]['url']
                         print(f"{C.G}URL:{C.X} {url}")
                         # Try to copy to clipboard on macOS
                         try:
@@ -263,8 +295,9 @@ def main():
             else:
                 if command and not command.startswith('#'):
                     # Treat as search query
+                    current_query = user_input
                     current_results = search_youtube_direct(user_input)
-                    display_results(current_results)
+                    sorted_results = display_results(current_results)
                     
         except KeyboardInterrupt:
             print(f"\n{C.Y}[INTERRUPTED]{C.X}")
