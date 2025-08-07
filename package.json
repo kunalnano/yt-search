@@ -1,0 +1,36 @@
+{
+  "name": "yt-search-terminal",
+  "version": "1.0.0",
+  "description": "Algorithm-free YouTube search in your terminal",
+  "main": "index.js",
+  "bin": {
+    "yt-search": "./bin/yt-search",
+    "yts": "./bin/yt-search"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\"",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alsharma/yt-search.git"
+  },
+  "keywords": [
+    "youtube",
+    "search",
+    "terminal",
+    "cli",
+    "algorithm-free",
+    "privacy"
+  ],
+  "author": "Al Sharma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alsharma/yt-search/issues"
+  },
+  "homepage": "https://github.com/alsharma/yt-search#readme",
+  "preferGlobal": true,
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
