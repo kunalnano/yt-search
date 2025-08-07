@@ -1,5 +1,4 @@
-<img width="627" height="384" alt="image" src="https://github.com/user-attachments/assets/96add455-4f71-4fdd-806a-ea23652ab600" />
-
+<img width="654" height="315" alt="image" src="https://github.com/user-attachments/assets/775330fa-a569-4e41-a591-f6b670060a3c" />
 
 # YT-Search: Algorithm-Free YouTube Terminal Browser 🚀
 
