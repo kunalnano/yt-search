@@ -4,13 +4,21 @@
   "description": "Algorithm-free YouTube search in your terminal",
   "main": "index.js",
   "bin": {
-    "yt-search": "./bin/yt-search",
-    "yts": "./bin/yt-search"
+    "yt-search": "./index.js",
+    "yts": "./index.js",
+    "youtube-search": "./index.js"
   },
   "scripts": {
-    "test": "echo \"No tests yet\"",
+    "test": "node index.js --version",
     "postinstall": "node scripts/postinstall.js"
   },
+  "files": [
+    "yt_search/**/*.py",
+    "index.js",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kunalnano/yt-search.git"
@@ -21,7 +29,10 @@
     "terminal",
     "cli",
     "algorithm-free",
-    "privacy"
+    "privacy",
+    "no-tracking",
+    "youtube-search",
+    "youtube-cli"
   ],
   "author": "Al Sharma",
   "license": "MIT",
@@ -32,5 +43,6 @@
   "preferGlobal": true,
   "engines": {
     "node": ">=12.0.0"
-  }
+  },
+  "os": ["darwin", "linux", "win32"]
 }

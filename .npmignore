@@ -1,0 +1,43 @@
+# Development files
+*.pyc
+__pycache__/
+.git/
+.gitignore
+.github/
+
+# Documentation files not needed in npm
+GITHUB_SETUP.md
+README_ENHANCED.md
+SEARCH_TIPS.md
+
+# Homebrew files
+homebrew-formula.rb
+Formula/
+
+# Release scripts
+release.sh
+github-setup.sh
+
+# Python packaging files
+setup.py
+pyproject.toml
+dist/
+build/
+*.egg-info/
+
+# Old versions
+youtube_search.py
+youtube_search_enhanced.py
+youtube_search_fixed.py
+youtube_clickable.py
+retro_yt.py
+
+# Test files
+test/
+tests/
+*.test.js
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
