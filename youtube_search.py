@@ -1,62 +1,71 @@
 #!/usr/bin/env python3
-"""
-Retro YouTube Search - Pure search, no algorithms
-Uses direct YouTube search without any dependencies
-"""
-
 import json
-import urllib.request
-import urllib.parse
-import subprocess
 import sys
-from typing import List, Dict
+import re
+import subprocess
+from typing import Dict, List, Optional
+from urllib.parse import quote
+import urllib.request
+import urllib.error
 
-# ANSI colors for retro terminal aesthetics
+# ANSI Color codes for retro terminal feel
 class C:
-    G = '\033[92m'     # Green
-    C = '\033[96m'     # Cyan
-    Y = '\033[93m'     # Yellow
-    R = '\033[91m'     # Red
-    B = '\033[1m'      # Bold
-    D = '\033[2m'      # Dim
-    X = '\033[0m'      # Reset
-    M = '\033[38;5;46m' # Matrix green
+    """Terminal colors"""
+    R = '\033[91m'  # Red
+    G = '\033[92m'  # Green  
+    Y = '\033[93m'  # Yellow
+    B = '\033[94m'  # Blue
+    M = '\033[38;5;46m'  # Bright Green
+    C = '\033[96m'  # Cyan
+    D = '\033[2m'    # Dim
+    X = '\033[0m'    # Reset
 
-def search_youtube_direct(query: str, max_results: int = 25, start_index: int = 0) -> List[Dict]:
+def search_youtube_direct(query: str, max_results: int = 25) -> List[Dict]:
     """
-    Search YouTube using their search page scraping
-    Returns list of video data dictionaries
+    Search YouTube by making direct HTTP requests to YouTube
+    Returns list of video information
     """
-    print(f"\n{C.C}[SEARCHING]{C.X} {query}")
-    
-    # URL encode the query
-    query_encoded = urllib.parse.quote(query)
-    
-    # Search URL - we'll use the YouTube search page
-    search_url = f"https://www.youtube.com/results?search_query={query_encoded}"
-    
     try:
-        # Create request with headers to look like a browser
-        req = urllib.request.Request(
-            search_url,
-            headers={
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
-            }
-        )        
-        with urllib.request.urlopen(req) as response:
-            html = response.read().decode('utf-8')
-            
-        # Extract video data from the HTML response
-        # YouTube embeds initial data in JSON
-        import re
-        pattern = r'var ytInitialData = ({.*?});'
-        match = re.search(pattern, html)
+        print(f"\n{C.C}[SEARCHING]{C.X} {query}")
         
-        if not match:
-            print(f"{C.R}Could not parse YouTube response{C.X}")
+        # Build YouTube search URL
+        search_url = f"https://www.youtube.com/results?search_query={quote(query)}"
+        
+        # Make request with browser-like headers
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        }
+        
+        req = urllib.request.Request(search_url, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            html_content = response.read().decode('utf-8')
+        
+        # Extract the initial data from YouTube's response
+        # YouTube embeds JSON data in the HTML containing search results
+        start_marker = 'var ytInitialData = '
+        end_marker = ';</script>'
+        
+        start_idx = html_content.find(start_marker)
+        if start_idx == -1:
+            print(f"{C.R}Could not find YouTube data in response{C.X}")
             return []
             
-        data = json.loads(match.group(1))
+        start_idx += len(start_marker)
+        end_idx = html_content.find(end_marker, start_idx)
+        
+        if end_idx == -1:
+            print(f"{C.R}Could not parse YouTube data{C.X}")
+            return []
+            
+        json_str = html_content[start_idx:end_idx]
+        
+        try:
+            data = json.loads(json_str)
+        except json.JSONDecodeError as e:
+            print(f"{C.R}Error parsing JSON: {e}{C.X}")
+            return []
         
         # Navigate through the JSON structure to find video results
         videos = []
@@ -67,7 +76,9 @@ def search_youtube_direct(query: str, max_results: int = 25, start_index: int = 
                 if 'itemSectionRenderer' not in content:
                     continue
                     
-                for item in content['itemSectionRenderer']['contents']:
+                items = content['itemSectionRenderer']['contents']
+                
+                for item in items:
                     if 'videoRenderer' not in item:
                         continue
                         
@@ -126,12 +137,17 @@ def display_results(videos: List[Dict], sort_by: str = 'views'):
     
     # Print header with URL column
     print(f"\n{C.G}{'═'*120}{C.X}")
-    print(f"{C.B}{C.C}  # │ TITLE{' '*39} │ VIEWS      │ AGE        │ URL{C.X}")
+    print(f"{C.B}{C.C}  # │ TITLE{' '*45} │ VIEWS      │ AGE        │ URL{C.X}")
     print(f"{C.G}{'═'*120}{C.X}")
     
     for idx, video in enumerate(videos, 1):
-        # Truncate title to fit
-        title = video['title'][:42].ljust(42)
+        # Clean title of emojis and special characters for better formatting
+        title = video['title']
+        # Remove emojis and other Unicode characters that can mess up alignment
+        # Keep only ASCII and basic Latin characters
+        title = re.sub(r'[^\x00-\x7F]+', '', title)
+        title = title[:50].ljust(50)  # Increased from 42 to 50 for better spacing
+        
         views = video['views'][:10].rjust(10) if video['views'] else 'N/A'.rjust(10)
         age = video['age'][:10].ljust(10) if video['age'] else 'N/A'.ljust(10)
         
@@ -168,38 +184,18 @@ def play_video(url: str, audio_only: bool = False):
 
 def main():
     """Main interactive loop"""
-    # Print banner
+    # Print simplified banner
     print(f"""
-{C.M}╔══════════════════════════════════════════════════════════════════════════╗
-║  ██╗   ██╗████████╗    ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗ ║
-║  ╚██╗ ██╔╝╚══██╔══╝    ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║ ║
-║   ╚████╔╝    ██║       ███████╗█████╗  ███████║██████╔╝██║     ███████║ ║
-║    ╚██╔╝     ██║       ╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║ ║
-║     ██║      ██║       ███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║ ║
-║     ╚═╝      ╚═╝       ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ║
-║                                                                           ║
-║  [NO ALGORITHMS. JUST PURE SEARCH. SORTED BY VIEWS.]                     ║
-╚══════════════════════════════════════════════════════════════════════════╝{C.X}
-""")
-    print(f"\n{C.G}Commands:{C.X}")
-    print(f"  {C.C}search <query>{C.X} - Search YouTube (auto-sorted by views)")
-    print(f"  {C.C}next{C.X} - Show next 25 results")
-    print(f"  {C.C}open <number>{C.X} - Open video in browser")
-    print(f"  {C.C}url <number>{C.X} - Copy video URL")
-def main():
-    """Main interactive loop"""
-    # Print banner
-    print(f"""
-{C.M}╔══════════════════════════════════════════════════════════════════════════╗
-║  ██╗   ██╗████████╗    ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗ ║
-║  ╚██╗ ██╔╝╚══██╔══╝    ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║ ║
-║   ╚████╔╝    ██║       ███████╗█████╗  ███████║██████╔╝██║     ███████║ ║
-║    ╚██╔╝     ██║       ╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║ ║
-║     ██║      ██║       ███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║ ║
-║     ╚═╝      ╚═╝       ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ║
-║                                                                           ║
-║  [NO ALGORITHMS. JUST PURE SEARCH. SORTED BY VIEWS.]                     ║
-╚══════════════════════════════════════════════════════════════════════════╝{C.X}
+{C.G}{'='*80}
+ █   █ █████   ████ █████  ███  ████   ████ █   █
+ █   █   █    █     █     █   █ █   █ █     █   █
+  ███    █     ███  ████  █████ ████  █     █████
+   █     █        █ █     █   █ █   █ █     █   █
+   █     █    ████  █████ █   █ █   █  ████ █   █
+{'='*80}
+  [NO ALGORITHMS. JUST PURE SEARCH. SORTED BY VIEWS.]
+  [FIXED TABLE FORMATTING v3.0]
+{'='*80}{C.X}
 """)
     
     print(f"\n{C.G}Commands:{C.X}")
@@ -207,13 +203,11 @@ def main():
     print(f"  {C.C}next{C.X} - Show next 25 results")
     print(f"  {C.C}open <number>{C.X} - Open video in browser")
     print(f"  {C.C}url <number>{C.X} - Copy video URL")
-    print(f"  {C.C}quit{C.X} - Exit")
+    print(f"  {C.C}quit{C.X} - Exit\n")
     
     current_query = ""
     current_results = []  # Raw results
     sorted_results = []    # Sorted for display
-    result_offset = 0
-    current_query = ""
     result_offset = 0
     
     while True:
@@ -300,7 +294,8 @@ def main():
                     sorted_results = display_results(current_results)
                     
         except KeyboardInterrupt:
-            print(f"\n{C.Y}[INTERRUPTED]{C.X}")
+            # Handle Ctrl+C gracefully without showing INTERRUPTED
+            print()  # Just print a newline
             continue
         except EOFError:
             print(f"\n{C.G}[GOODBYE]{C.X}")
